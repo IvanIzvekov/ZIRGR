@@ -43,7 +43,7 @@ def ferma(x):
 def generate_simple_number(left, right):
     result = randint(left, right)
 
-    while ferma(result) == False:
+    while not ferma(result):
         result = randint(left, right)
 
     return result

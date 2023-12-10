@@ -12,12 +12,12 @@ def registration(conn, login):
         Q = crypto.generate_simple_number(1000, 100000000)
     N = P * Q
     conn.send(str(N).encode())
-    print("N = " + str(N))
+
     V = conn.recv(1024).decode()
-    print("V = " + str(V))
+
     account = {
-            "N": N,
-            "V": int(V)
+        "N": N,
+        "V": int(V)
     }
     with open('data_file.json') as f:
         data = json.load(f)
@@ -53,7 +53,7 @@ def server_program():
     with open('data_file.json') as f:
         database = json.load(f)
 
-    #Open keys
+    # Open keys
     N = int(database[login]["N"])
     V = int(database[login]["V"])
     f.close()
@@ -63,29 +63,30 @@ def server_program():
 
     t = 20
     for step in range(t):
-        x = int(conn.recv(1024).decode())####
+        x = int(conn.recv(1024).decode())
 
         e = random.choice([0, 1])
-        conn.send(str(e).encode())####
+        conn.send(str(e).encode())
 
-        y = int(conn.recv(1024).decode())####
+        y = int(conn.recv(1024).decode())
 
-        left_op = y ** 2
-        print(left_op)
+        left_op = pow(y * y, 1, N)
         right_op = (x * pow(V, e)) % N
-        print(right_op)
-        if left_op == right_op:
+        if left_op == right_op and step != 19:
             authorize = True
             conn.send("Continue...".encode())
-        else:
-            authorize = False
+            continue
 
-        if not authorize:
-            conn.send("Wrong user. Disconnect...".encode())
-            print("Wrong user. Disconnect...")
-            conn.close()
-            return
-        print(str(step) + " Step")
+        if left_op == right_op and step == 19:
+            conn.send("Success. Welcome".encode())
+            continue
+
+
+        conn.send("Wrong user. Disconnect...".encode())
+        print("Wrong user. Disconnect...")
+        conn.close()
+        return
+
 
 if __name__ == '__main__':
     while True:
