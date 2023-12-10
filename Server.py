@@ -72,12 +72,12 @@ def server_program():
 
         left_op = pow(y * y, 1, N)
         right_op = (x * pow(V, e)) % N
-        if left_op == right_op and step != 19:
+        if left_op == right_op and step != t - 1:
             authorize = True
             conn.send("Continue...".encode())
             continue
 
-        if left_op == right_op and step == 19:
+        if left_op == right_op and step == t - 1:
             conn.send("Success. Welcome".encode())
             continue
 
